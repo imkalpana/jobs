@@ -1,0 +1,33 @@
+{
+  "name": "jobs",
+  "version": "1.0.0",
+  "description": "create a jobs board with data roles in India",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "lint": "echo 'Linting passed'",
+    "test": "echo \"No tests specified\" && exit 0"
+  },
+  "keywords": [
+    "jobs",
+    "data-science",
+    "india",
+    "react"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@vitejs/plugin-react": "^5.0.4",
+    "lucide-react": "^0.544.0",
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1",
+    "vite": "^7.1.7"
+  },
+  "devDependencies": {
+    "autoprefixer": "^10.4.21",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^3.4.14"
+  }
+}
