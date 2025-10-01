@@ -1,5 +1,5 @@
 import React from 'react';
-import { MapPin, Clock, Star, Briefcase, TrendingUp } from 'lucide-react';
+import { MapPin, Clock, Star, Briefcase, TrendingUp, ExternalLink } from 'lucide-react';
 
 const JobCard = ({ job, matchScore = null }) => {
   const formatSalary = (salary) => {
@@ -25,6 +25,14 @@ const JobCard = ({ job, matchScore = null }) => {
     return `${Math.floor(diffDays / 30)} months ago`;
   };
 
+  const handleApplyClick = () => {
+    if (job.externalUrl) {
+      window.open(job.externalUrl, '_blank', 'noopener,noreferrer');
+    }
+  };
+
+  const isExternalJob = job.source && job.externalUrl;
+
   return (
     <div className="card hover:shadow-md transition-shadow duration-200 border-l-4 border-l-primary-500">
       <div className="flex justify-between items-start mb-4">
@@ -34,6 +42,12 @@ const JobCard = ({ job, matchScore = null }) => {
             {matchScore && (
               <span className={`px-2 py-1 rounded-full text-xs font-medium ${getMatchBadgeColor(matchScore)}`}>
                 {matchScore}% match
+              </span>
+            )}
+            {isExternalJob && (
+              <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-xs font-medium flex items-center gap-1">
+                <ExternalLink className="w-3 h-3" />
+                {job.source}
               </span>
             )}
           </div>
@@ -89,9 +103,19 @@ const JobCard = ({ job, matchScore = null }) => {
         <span className="text-sm text-gray-500 bg-gray-100 px-2 py-1 rounded">
           {job.category}
         </span>
-        <button className="btn-primary">
-          Apply Now
-        </button>
+        {isExternalJob ? (
+          <button 
+            onClick={handleApplyClick}
+            className="btn-primary flex items-center gap-2"
+          >
+            Apply Now
+            <ExternalLink className="w-4 h-4" />
+          </button>
+        ) : (
+          <button className="btn-primary">
+            Apply Now
+          </button>
+        )}
       </div>
     </div>
   );
