@@ -1,6 +1,7 @@
 import React, { useState, useCallback } from 'react';
 import { Upload, FileText, X, CheckCircle, AlertCircle } from 'lucide-react';
 import { parseResumeContent } from '../utils/resumeParser';
+import { extractTextFromPDF } from '../utils/pdfParser';
 
 const ResumeUpload = ({ onResumeAnalyzed }) => {
   const [dragActive, setDragActive] = useState(false);
@@ -45,33 +46,16 @@ const ResumeUpload = ({ onResumeAnalyzed }) => {
         throw new Error('Please upload a PDF or text file');
       }
 
-      // For demo purposes, we'll simulate reading a text file
-      // In a real application, you'd use PDF parsing libraries
       let text = '';
       
       if (file.type === 'text/plain' || file.name.toLowerCase().endsWith('.txt')) {
+        // Read text file directly
         text = await file.text();
+      } else if (file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf')) {
+        // Extract text from PDF
+        text = await extractTextFromPDF(file);
       } else {
-        // For PDF files, we'll use a sample resume text for demo
-        text = `John Doe
-Senior Data Scientist
-Email: john.doe@email.com
-Phone: +91-9876543210
-
-EXPERIENCE:
-- 5+ years of experience in machine learning and data science
-- Python, SQL, TensorFlow, PyTorch, Scikit-learn
-- AWS, Docker, Kubernetes for MLOps
-- Statistical analysis and A/B testing
-- Built recommendation systems at scale
-
-SKILLS:
-Python, R, SQL, Machine Learning, Deep Learning, TensorFlow, PyTorch, 
-Pandas, NumPy, Scikit-learn, Statistics, AWS, Docker, Kubernetes, 
-Tableau, Git, MLOps, Apache Spark, Kafka
-
-EDUCATION:
-Master's in Computer Science`;
+        throw new Error('Unsupported file format');
       }
 
       const parsed = parseResumeContent(text);
