@@ -1,5 +1,50 @@
 // Utility functions for resume parsing and job matching
 
+/**
+ * Mask email address for privacy
+ * Example: john.doe@email.com -> joh***@email.com
+ * @param {string} email - The email address to mask
+ * @returns {string} - Masked email address
+ */
+export const maskEmail = (email) => {
+  if (!email) return null;
+  
+  const [localPart, domain] = email.split('@');
+  if (!localPart || !domain) return email;
+  
+  // Show first 3 characters, mask the rest
+  const visibleChars = Math.min(3, localPart.length);
+  const maskedLocal = localPart.substring(0, visibleChars) + '***';
+  
+  return `${maskedLocal}@${domain}`;
+};
+
+/**
+ * Mask phone number for privacy
+ * Example: +91-9876543210 -> +91-****-***-210
+ * @param {string} phone - The phone number to mask
+ * @returns {string} - Masked phone number
+ */
+export const maskPhone = (phone) => {
+  if (!phone) return null;
+  
+  // Remove all non-digit characters except leading +
+  const cleaned = phone.replace(/[^\d+]/g, '');
+  
+  // Keep the country code (if present) and last 3 digits visible
+  if (cleaned.length <= 3) return phone;
+  
+  const lastDigits = cleaned.slice(-3);
+  const countryCode = cleaned.startsWith('+') ? cleaned.substring(0, 3) : '';
+  
+  if (countryCode) {
+    return `${countryCode}-****-***-${lastDigits}`;
+  } else {
+    // For numbers without country code
+    return `****-***-${lastDigits}`;
+  }
+};
+
 export const extractSkillsFromText = (text) => {
   const skillKeywords = [
     // Programming Languages
@@ -85,11 +130,15 @@ export const parseResumeContent = (text) => {
   const emailMatch = text.match(/\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/);
   const phoneMatch = text.match(/[\+]?[1-9]?[\d\s\-\(\)]{10,}/);
   
+  // Extract raw values
+  const rawEmail = emailMatch ? emailMatch[0] : null;
+  const rawPhone = phoneMatch ? phoneMatch[0] : null;
+  
   return {
     skills,
     experience,
-    email: emailMatch ? emailMatch[0] : null,
-    phone: phoneMatch ? phoneMatch[0] : null,
+    email: maskEmail(rawEmail),
+    phone: maskPhone(rawPhone),
     rawText: text
   };
 };
