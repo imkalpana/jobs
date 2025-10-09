@@ -1,8 +1,11 @@
 // PDF parsing utility using pdfjs-dist
 import * as pdfjsLib from 'pdfjs-dist';
 
-// Configure the worker
-pdfjsLib.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`;
+// Configure the worker - use a local worker from node_modules
+pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
+  'pdfjs-dist/build/pdf.worker.min.mjs',
+  import.meta.url
+).toString();
 
 /**
  * Extract text content from a PDF file
